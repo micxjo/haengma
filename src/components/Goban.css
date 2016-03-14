@@ -1,0 +1,16 @@
+rect.wood {
+    fill: #DCB35C;
+}
+
+path.grid {
+    stroke-width: 0.8;
+    stroke: #000;
+}
+
+circle.whiteStone {
+    fill: url(#whiteGradient);
+}
+
+circle.blackStone {
+    fill: url(#blackGradient);
+}
