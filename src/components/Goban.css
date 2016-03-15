@@ -7,10 +7,35 @@ path.grid {
     stroke: #000;
 }
 
-circle.whiteStone {
+.whiteStone circle {
     fill: url(#whiteGradient);
 }
 
-circle.blackStone {
+.blackStone circle {
     fill: url(#blackGradient);
+}
+
+.label {
+    text-anchor: middle;
+    font-family: Arial, sans-serif;
+}
+
+.label1 {
+    font-size: 13px;
+}
+
+.label2 {
+    font-size: 10px;
+}
+
+.label3 {
+    font-size: 9px;
+}
+
+.whiteStone text {
+    fill: black;
+}
+
+.blackStone text {
+    fill: white;
 }

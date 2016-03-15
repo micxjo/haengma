@@ -46,10 +46,26 @@ function Stone(props) {
     const className = styles[`${props.color}Stone`];
     const boxSize = props.gridWidth / (props.boardSize - 1);
     const radius = props.radius || (boxSize / 2.05);
-    return (<circle className={className}
-                    cx={props.x * boxSize}
-                    cy={props.y * boxSize}
-                    r={radius} />);
+    const cx = props.x * boxSize;
+    const cy = props.y * boxSize;
+
+    const circle = <circle cx={cx} cy={cy} r={radius} />;
+
+    if (props.label) {
+        const textY = cy + (boxSize / 6);
+        const lenLabel = `label${props.label.length}`;
+        const textClassName = `${styles.label} ${styles[lenLabel]}`;
+        return (
+            <g className={className}>
+                {circle}
+                <text className={textClassName} x={cx} y={textY}>
+                    {props.label}
+                </text>
+            </g>
+        );
+    }
+
+    return <g className={className}>{circle}</g>;
 }
 
 Stone.propTypes = {
@@ -57,6 +73,7 @@ Stone.propTypes = {
     gridWidth: React.PropTypes.number,
     boardSize: React.PropTypes.number,
     radius: React.PropTypes.number,
+    label: React.PropTypes.string,
     x: React.PropTypes.number.isRequired,
     y: React.PropTypes.number.isRequired
 };
