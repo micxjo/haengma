@@ -7,6 +7,12 @@ path.grid {
     stroke: #000;
 }
 
+.coordinates {
+    font-size: 11px;
+    font-family: Arial, sans-serif;
+    text-anchor: end;
+}
+
 .whiteStone circle {
     fill: url(#whiteGradient);
 }

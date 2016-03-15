@@ -42,6 +42,50 @@ Grid.propTypes = {
     width: React.PropTypes.number
 };
 
+function Coordinates(props) {
+    const { boardSize, gridWidth } = props;
+    const boxSize = gridWidth / (boardSize - 1);
+    const rows = R.map(
+        (i) => {
+            const y = (boardSize - i) * boxSize + 4;
+            return (
+                <g>
+                    <text x="-4" y={y}>{i}</text>
+                    <text x={gridWidth + 14} y={y}>{i}</text>
+                </g>
+            );
+        },
+        R.range(1, boardSize + 1)
+    );
+    const cols = R.zipWith(
+        (i, c) => {
+            const x = i * boxSize + 4;
+            return (
+                <g>
+                    <text x={x} y="-4">{c}</text>,
+                    <text x={x} y={gridWidth + 14}>{c}</text>
+                </g>
+            );
+        },
+        R.range(0, boardSize),
+        [
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
+            'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'
+        ]
+    );
+    return (
+        <g className={styles.coordinates}>
+            {rows}
+            {cols}
+        </g>
+    );
+}
+
+Coordinates.propTypes = {
+    boardSize: React.PropTypes.number.isRequired,
+    gridWidth: React.PropTypes.number.isRequired
+};
+
 function Stone(props) {
     const className = styles[`${props.color}Stone`];
     const boxSize = props.gridWidth / (props.boardSize - 1);
@@ -100,18 +144,24 @@ const gradients = [
 
 function Goban(props) {
     const gridWidth = 342;
-    const viewBox = `-10 -10 ${gridWidth + 20} ${gridWidth + 20}`;
+    const boardSize = props.boardSize;
+    const viewBox = `-20 -20 ${gridWidth + 50} ${gridWidth + 50}`;
     return (
         <svg viewBox={viewBox} xmlns="http://w3.org/2000/svg">
             <defs>
                 {gradients}
             </defs>
-            <rect className={styles.wood} x="-10" y="-10" height="100%" width="100%" />
-            <Grid boardSize={props.boardSize} width={gridWidth} />
+            <rect className={styles.wood} x="-20" y="-20" height="100%" width="100%" />
+            <Grid boardSize={boardSize} width={gridWidth} />
+            {
+                (props.showCoordinates
+                    ? <Coordinates boardSize={boardSize} gridWidth={gridWidth} />
+                    : null)
+            }
             {
                 R.map(
                     (stone) => (<Stone gridWidth={gridWidth}
-                                       boardSize={props.boardSize}
+                                       boardSize={boardSize}
                                        {...stone} />),
                     props.stones
                 )
@@ -122,12 +172,14 @@ function Goban(props) {
 
 Goban.propTypes = {
     boardSize: React.PropTypes.number,
-    stones: React.PropTypes.arrayOf(React.PropTypes.object)
+    stones: React.PropTypes.arrayOf(React.PropTypes.object),
+    showCoordinates: React.PropTypes.bool
 };
 
 Goban.defaultProps = {
     boardSize: 19,
-    stones: []
+    stones: [],
+    showCoordinates: false
 };
 
 export default Goban;

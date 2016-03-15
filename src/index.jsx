@@ -11,7 +11,7 @@ const initialStones = [
 function App() {
     return (
         <div className={styles.goban}>
-            <Goban stones={initialStones} />,
+            <Goban stones={initialStones} showCoordinates={true} />,
         </div>
     );
 }
