@@ -40,6 +40,12 @@ module.exports = {
     },
     devServer: {
         contentBase: PATHS.build,
+        hot: true,
+        inline: true,
+        progress: true,
         port: process.env.PORT || 3000
-    }
+    },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin()
+    ]
 };
