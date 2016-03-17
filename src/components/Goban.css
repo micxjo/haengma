@@ -21,6 +21,14 @@ path.grid {
     fill: url(#blackGradient);
 }
 
+.ghost {
+    fill-opacity: 0;
+}
+
+.ghost:hover {
+    fill-opacity: 0.6;
+}
+
 .label {
     text-anchor: middle;
     font-family: Arial, sans-serif;

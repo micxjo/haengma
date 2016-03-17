@@ -86,30 +86,45 @@ Coordinates.propTypes = {
     gridWidth: React.PropTypes.number.isRequired
 };
 
-function Stone(props) {
-    const className = styles[`${props.color}Stone`];
-    const boxSize = props.gridWidth / (props.boardSize - 1);
-    const radius = props.radius || (boxSize / 2.05);
-    const cx = props.x * boxSize;
-    const cy = props.y * boxSize;
-
-    const circle = <circle cx={cx} cy={cy} r={radius} />;
-
-    if (props.label) {
-        const textY = cy + (boxSize / 6);
-        const lenLabel = `label${props.label.length}`;
-        const textClassName = `${styles.label} ${styles[lenLabel]}`;
-        return (
-            <g className={className}>
-                {circle}
-                <text className={textClassName} x={cx} y={textY}>
-                    {props.label}
-                </text>
-            </g>
-        );
+class Stone extends React.Component {
+    constructor() {
+        super();
+        this.handleClick = this.handleClick.bind(this);
     }
 
-    return <g className={className}>{circle}</g>;
+    handleClick() {
+        if (this.props.onClick) {
+            this.props.onClick(this.props.x, this.props.y);
+        }
+    }
+
+    render() {
+        const stoneClass = this.props.color === 'white' ? styles.whiteStone : styles.blackStone;
+        const className = this.props.ghost ? `${stoneClass} ${styles.ghost}` : stoneClass;
+
+        const boxSize = this.props.gridWidth / (this.props.boardSize - 1);
+        const radius = this.props.radius || (boxSize / 2.05);
+        const cx = this.props.x * boxSize;
+        const cy = this.props.y * boxSize;
+
+        const circle = <circle cx={cx} cy={cy} r={radius} />;
+
+        let body = [circle];
+
+        if (this.props.label) {
+            const textY = cy + (boxSize / 6);
+            const lenLabel = `label${this.props.label.length}`;
+            const textClassName = `${styles.label} ${styles[lenLabel]}`;
+            body = R.append(
+                <text className={textClassName} x={cx} y={textY}>
+                    {this.props.label}
+                </text>,
+                body
+            );
+        }
+
+        return <g className={className} onClick={this.handleClick}>{body}</g>;
+    }
 }
 
 Stone.propTypes = {
@@ -119,7 +134,58 @@ Stone.propTypes = {
     radius: React.PropTypes.number,
     label: React.PropTypes.string,
     x: React.PropTypes.number.isRequired,
-    y: React.PropTypes.number.isRequired
+    y: React.PropTypes.number.isRequired,
+    ghost: React.PropTypes.bool,
+    onClick: React.PropTypes.func
+};
+
+Stone.defaultProps = {
+    ghost: false
+};
+
+class GhostStones extends React.Component {
+    constructor() {
+        super();
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick(x, y) {
+        alert(`Ghost stone at (${x}, ${y}) clicked.`);
+        if (this.props.onClick) {
+            this.props.onClick(x, y);
+        }
+    }
+
+    render() {
+        const stones = R.map(
+            ([x, y]) => (
+                <Stone ghost
+                       color={this.props.toPlay}
+                       x={x}
+                       y={y}
+                       boardSize={this.props.boardSize}
+                       gridWidth={this.props.gridWidth}
+                       onClick={this.handleClick} />
+            ),
+            R.xprod(
+                R.range(0, this.props.boardSize),
+                R.range(0, this.props.boardSize)
+            )
+        );
+
+        return <g>{stones}</g>;
+    }
+}
+
+GhostStones.propTypes = {
+    toPlay: React.PropTypes.string,
+    boardSize: React.PropTypes.number.isRequired,
+    gridWidth: React.PropTypes.number.isRequired,
+    onClick: React.PropTypes.func
+};
+
+GhostStones.defaultProps = {
+    toPlay: 'black'
 };
 
 const gradients = [
@@ -153,6 +219,7 @@ function Goban(props) {
             </defs>
             <rect className={styles.wood} x="-20" y="-20" height="100%" width="100%" />
             <Grid boardSize={boardSize} width={gridWidth} />
+            <GhostStones toPlay="black" boardSize={boardSize} gridWidth={gridWidth} />
             {
                 (props.showCoordinates
                     ? <Coordinates boardSize={boardSize} gridWidth={gridWidth} />
