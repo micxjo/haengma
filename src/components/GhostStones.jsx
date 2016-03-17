@@ -10,7 +10,6 @@ class GhostStones extends React.Component {
     }
 
     handleClick(x, y) {
-        alert(`Ghost stone at (${x}, ${y}) clicked.`);
         if (this.props.onClick) {
             this.props.onClick(x, y);
         }

@@ -37,7 +37,10 @@ function Goban(props) {
             </defs>
             <rect className={styles.wood} x="-20" y="-20" height="100%" width="100%" />
             <Grid boardSize={boardSize} width={gridWidth} />
-            <GhostStones toPlay="black" boardSize={boardSize} gridWidth={gridWidth} />
+            <GhostStones toPlay={props.toPlay}
+                         boardSize={boardSize}
+                         gridWidth={gridWidth}
+                         onClick={props.onPointClick} />
             {
                 (props.showCoordinates
                     ? <Coordinates boardSize={boardSize} gridWidth={gridWidth} />
@@ -58,13 +61,16 @@ function Goban(props) {
 Goban.propTypes = {
     boardSize: React.PropTypes.number,
     stones: React.PropTypes.arrayOf(React.PropTypes.object),
-    showCoordinates: React.PropTypes.bool
+    showCoordinates: React.PropTypes.bool,
+    toPlay: React.PropTypes.string,
+    onPointClick: React.PropTypes.func
 };
 
 Goban.defaultProps = {
     boardSize: 19,
     stones: [],
-    showCoordinates: false
+    showCoordinates: false,
+    toPlay: 'black'
 };
 
 export default Goban;
